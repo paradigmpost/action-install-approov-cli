@@ -1,19 +1,68 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+import * as core from "@actions/core";
+import * as tc from "@actions/tool-cache";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
+
+import makeDir from 'make-dir';
 
 async function run(): Promise<void> {
-  try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+    try {
+        let platform = "";
+        switch (os.platform()) {
+            case "linux":
+                platform = "linux";
+                break;
+            case "darwin":
+                platform = "darwin";
+                break;
+            case "win32":
+                platform = "windows";
+                break;
+            default:
+                core.setFailed("Unsupported operating system - Pulumi CLI is only released for Darwin, Linux and Windows");
+                return;
+        }
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+        const downloadUrl = `https://approov.io/downloads/approovcli.zip`;
+        const destination = path.join(os.homedir(), ".approov");
+        core.info(`Install destination is ${destination}`)
 
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    core.setFailed(error.message)
-  }
+        const downloaded = await tc.downloadTool(downloadUrl);
+        core.info(`successfully downloaded ${downloadUrl}`)
+
+        let pathFolder = ""
+    
+        // The packages for Windows and *nix are structured differently - note the extraction paths for each.
+        switch (platform) {
+            case "windows":
+                await tc.extractZip(downloaded, os.homedir());
+                fs.renameSync(path.join(os.homedir(), "Approov"), path.join(os.homedir(), ".approov"));
+                core.addPath(path.join(destination, "bin"));
+                return;
+            case "linux":
+                pathFolder = "Linux"
+                break;
+            case "darwin":
+                pathFolder = "MacOS"
+                break;
+        }
+
+        const destinationPath = await makeDir(destination);
+        core.info(`Successfully created ${destinationPath}`)
+        const extractedPath = await tc.extractZip(downloaded, destination);
+        const cliContents = path.join(extractedPath, "approovcli")
+        core.info(`Successfully extracted ${downloaded} to ${cliContents}`)
+        
+        const oldPath = path.join(cliContents, pathFolder)
+        const newPath = path.join(cliContents, "bin");
+        fs.renameSync(oldPath, newPath);
+        core.info(`Successfully renamed ${oldPath} to ${newPath}`)
+
+        core.addPath(newPath);
+    } catch (error) {
+        core.setFailed(error.message);
+    }
 }
 
-run()
+run();
