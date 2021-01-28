@@ -2,113 +2,6 @@ require('./sourcemap-register.js');module.exports =
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 109:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__webpack_require__(186));
-const tc = __importStar(__webpack_require__(784));
-const fs = __importStar(__webpack_require__(747));
-const os = __importStar(__webpack_require__(87));
-const path = __importStar(__webpack_require__(622));
-const node_fetch_1 = __importDefault(__webpack_require__(467));
-const make_dir_1 = __importDefault(__webpack_require__(126));
-function run() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            let platform = "";
-            switch (os.platform()) {
-                case "linux":
-                    platform = "linux";
-                    break;
-                case "darwin":
-                    platform = "darwin";
-                    break;
-                case "win32":
-                    platform = "windows";
-                    break;
-                default:
-                    core.setFailed("Unsupported operating system - Pulumi CLI is only released for Darwin, Linux and Windows");
-                    return;
-            }
-            let version = core.getInput("pulumi-version");
-            if (version == "latest") {
-                const resp = yield node_fetch_1.default("https://www.pulumi.com/latest-version");
-                version = yield resp.text();
-            }
-            const downloadUrl = `https://approov.io/downloads/approovcli.zip`;
-            const destination = path.join(os.homedir(), ".approv");
-            core.info(`Install destination is ${destination}`);
-            const downloaded = yield tc.downloadTool(downloadUrl);
-            core.info(`successfully downloaded ${downloadUrl}`);
-            let pathFolder = "";
-            // The packages for Windows and *nix are structured differently - note the extraction paths for each.
-            switch (platform) {
-                case "windows":
-                    yield tc.extractZip(downloaded, os.homedir());
-                    fs.renameSync(path.join(os.homedir(), "Approov"), path.join(os.homedir(), ".approov"));
-                    core.addPath(path.join(destination, "bin"));
-                    return;
-                case "linux":
-                    pathFolder = "Linux";
-                    break;
-                case "darwin":
-                    pathFolder = "MacOS";
-                    break;
-            }
-            let destinationPath = yield make_dir_1.default(destination);
-            core.info(`Successfully created ${destinationPath}`);
-            let extractedPath = yield tc.extractTar(downloaded, destination);
-            core.info(`Successfully extracted ${downloaded} to ${extractedPath}`);
-            let oldPath = path.join(destination, "approov");
-            let newPath = path.join(destination, pathFolder);
-            fs.renameSync(oldPath, newPath);
-            core.info(`Successfully renamed ${oldPath} to ${newPath}`);
-            core.addPath(path.join(destination, pathFolder));
-        }
-        catch (error) {
-            core.setFailed(error.message);
-        }
-    });
-}
-run();
-
-
-/***/ }),
-
 /***/ 351:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
@@ -2500,7 +2393,7 @@ class HTTPError extends Error {
     constructor(httpStatusCode) {
         super(`Unexpected HTTP response: ${httpStatusCode}`);
         this.httpStatusCode = httpStatusCode;
-        Object.setPrototypeOf(this, new.target.prototype);
+        Object.setPrototypeOf(this, /* unsupported import.meta.prototype */ undefined);
     }
 }
 exports.HTTPError = HTTPError;
@@ -6790,14 +6683,16 @@ function bytesToUuid(buf, offset) {
   var i = offset || 0;
   var bth = byteToHex;
   // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
-  return ([bth[buf[i++]], bth[buf[i++]], 
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]],
-	bth[buf[i++]], bth[buf[i++]],
-	bth[buf[i++]], bth[buf[i++]]]).join('');
+  return ([
+    bth[buf[i++]], bth[buf[i++]],
+    bth[buf[i++]], bth[buf[i++]], '-',
+    bth[buf[i++]], bth[buf[i++]], '-',
+    bth[buf[i++]], bth[buf[i++]], '-',
+    bth[buf[i++]], bth[buf[i++]], '-',
+    bth[buf[i++]], bth[buf[i++]],
+    bth[buf[i++]], bth[buf[i++]],
+    bth[buf[i++]], bth[buf[i++]]
+  ]).join('');
 }
 
 module.exports = bytesToUuid;
@@ -6856,6 +6751,92 @@ module.exports = v4;
 
 /***/ }),
 
+/***/ 399:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __importStar(__webpack_require__(186));
+const tc = __importStar(__webpack_require__(784));
+const fs = __importStar(__webpack_require__(747));
+const os = __importStar(__webpack_require__(87));
+const path = __importStar(__webpack_require__(622));
+const fetch = __webpack_require__(467);
+const makeDir = __webpack_require__(126);
+function run() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let platform = "";
+            switch (os.platform()) {
+                case "linux":
+                    platform = "linux";
+                    break;
+                case "darwin":
+                    platform = "darwin";
+                    break;
+                case "win32":
+                    platform = "windows";
+                    break;
+                default:
+                    core.setFailed("Unsupported operating system - Pulumi CLI is only released for Darwin, Linux and Windows");
+                    return;
+            }
+            let version = core.getInput("pulumi-version");
+            if (version == "latest") {
+                const resp = yield fetch("https://www.pulumi.com/latest-version");
+                version = yield resp.text();
+            }
+            const downloadUrl = `https://get.pulumi.com/releases/sdk/pulumi-v${version}-${platform}-x64.${platform == "windows" ? "zip" : "tar.gz"}`;
+            const destination = path.join(os.homedir(), ".pulumi");
+            core.info(`Install destination is ${destination}`);
+            const downloaded = yield tc.downloadTool(downloadUrl);
+            core.info(`successfully downloaded ${downloadUrl}`);
+            // The packages for Windows and *nix are structured differently - note the extraction paths for each.
+            switch (platform) {
+                case "windows":
+                    yield tc.extractZip(downloaded, os.homedir());
+                    fs.renameSync(path.join(os.homedir(), "Pulumi"), path.join(os.homedir(), ".pulumi"));
+                    break;
+                default:
+                    let destinationPath = yield makeDir(destination);
+                    core.info(`Successfully created ${destinationPath}`);
+                    let extractedPath = yield tc.extractTar(downloaded, destination);
+                    core.info(`Successfully extracted ${downloaded} to ${extractedPath}`);
+                    let oldPath = path.join(destination, "pulumi");
+                    let newPath = path.join(destination, "bin");
+                    fs.renameSync(oldPath, newPath);
+                    core.info(`Successfully renamed ${oldPath} to ${newPath}`);
+                    break;
+            }
+            core.addPath(path.join(destination, "bin"));
+        }
+        catch (error) {
+            core.setFailed(error.message);
+        }
+    });
+}
+run();
+
+
+/***/ }),
+
 /***/ 877:
 /***/ ((module) => {
 
@@ -6868,7 +6849,7 @@ module.exports = eval("require")("encoding");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("assert");;
+module.exports = require("assert");
 
 /***/ }),
 
@@ -6876,7 +6857,7 @@ module.exports = require("assert");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("child_process");;
+module.exports = require("child_process");
 
 /***/ }),
 
@@ -6884,7 +6865,7 @@ module.exports = require("child_process");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("crypto");;
+module.exports = require("crypto");
 
 /***/ }),
 
@@ -6892,7 +6873,7 @@ module.exports = require("crypto");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("events");;
+module.exports = require("events");
 
 /***/ }),
 
@@ -6900,7 +6881,7 @@ module.exports = require("events");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("fs");;
+module.exports = require("fs");
 
 /***/ }),
 
@@ -6908,7 +6889,7 @@ module.exports = require("fs");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("http");;
+module.exports = require("http");
 
 /***/ }),
 
@@ -6916,7 +6897,7 @@ module.exports = require("http");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("https");;
+module.exports = require("https");
 
 /***/ }),
 
@@ -6924,7 +6905,7 @@ module.exports = require("https");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("net");;
+module.exports = require("net");
 
 /***/ }),
 
@@ -6932,7 +6913,7 @@ module.exports = require("net");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("os");;
+module.exports = require("os");
 
 /***/ }),
 
@@ -6940,7 +6921,7 @@ module.exports = require("os");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("path");;
+module.exports = require("path");
 
 /***/ }),
 
@@ -6948,7 +6929,7 @@ module.exports = require("path");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("stream");;
+module.exports = require("stream");
 
 /***/ }),
 
@@ -6956,7 +6937,7 @@ module.exports = require("stream");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("tls");;
+module.exports = require("tls");
 
 /***/ }),
 
@@ -6964,7 +6945,7 @@ module.exports = require("tls");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("url");;
+module.exports = require("url");
 
 /***/ }),
 
@@ -6972,7 +6953,7 @@ module.exports = require("url");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("util");;
+module.exports = require("util");
 
 /***/ }),
 
@@ -6980,7 +6961,7 @@ module.exports = require("util");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("zlib");;
+module.exports = require("zlib");
 
 /***/ })
 
@@ -7022,7 +7003,7 @@ module.exports = require("zlib");;
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(109);
+/******/ 	return __webpack_require__(399);
 /******/ })()
 ;
 //# sourceMappingURL=index.js.map
