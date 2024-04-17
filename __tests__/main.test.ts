@@ -4,6 +4,8 @@ import * as cp from 'child_process'
 import * as path from 'path'
 import * as os from 'os'
 
+import {destination} from '../src/destination'
+
 test('throws invalid number', async () => {
   const input = parseInt('foo', 10)
   await expect(wait(input)).rejects.toThrow('milliseconds not a number')
@@ -18,7 +20,7 @@ test('wait 500 ms', async () => {
 })
 
 // shows how the runner will run a javascript action with env / stdout protocol
-test('test runs', () => {
+test('install completes successfully', () => {
   process.env['INPUT_MILLISECONDS'] = '500'
   const np = process.execPath
   const ip = path.join(__dirname, '..', 'lib', 'main.js')
@@ -30,3 +32,12 @@ test('test runs', () => {
   }
   console.log(cp.execFileSync(np, [ip], options).toString())
 })
+
+// attempts to run the installed binary
+// init is used because it provides a successful/zero exit code
+test('cli init runs', () => {
+  process.env['INPUT_MILLISECONDS'] = '500'
+  const ip = path.join(destination, 'approovcli', 'bin', 'approov');
+  console.log(cp.execSync(`${ip} init`).toString())
+})
+
