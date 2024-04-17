@@ -5,6 +5,7 @@ import * as os from "os";
 import * as path from "path";
 
 import makeDir from 'make-dir';
+import { destination } from './destination';
 
 async function run(): Promise<void> {
     try {
@@ -25,7 +26,6 @@ async function run(): Promise<void> {
         }
 
         const downloadUrl = `https://approov.io/downloads/approovcli.zip`;
-        const destination = path.join(os.homedir(), ".approov");
         core.info(`Install destination is ${destination}`)
 
         const downloaded = await tc.downloadTool(downloadUrl);
@@ -37,7 +37,7 @@ async function run(): Promise<void> {
         switch (platform) {
             case "windows":
                 await tc.extractZip(downloaded, os.homedir());
-                fs.renameSync(path.join(os.homedir(), "Approov"), path.join(os.homedir(), ".approov"));
+                fs.renameSync(path.join(os.homedir(), "Approov"), destination);
                 core.addPath(path.join(destination, "bin"));
                 return;
             case "linux":
