@@ -37,7 +37,6 @@ async function run(): Promise<void> {
         switch (platform) {
             case "windows":
                 await tc.extractZip(downloaded, os.homedir());
-                fs.renameSync(path.join(os.homedir(), "Approov"), destination);
                 core.addPath(path.join(destination, "bin"));
                 return;
             case "linux":

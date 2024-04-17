@@ -29,7 +29,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.destination = void 0;
 const path = __importStar(__nccwpck_require__(17));
 const os = __importStar(__nccwpck_require__(37));
-exports.destination = path.join(os.homedir(), ".approov");
+exports.destination = path.join(os.homedir(), "Approov");
 
 
 /***/ }),
@@ -105,7 +105,6 @@ function run() {
             switch (platform) {
                 case "windows":
                     yield tc.extractZip(downloaded, os.homedir());
-                    fs.renameSync(path.join(os.homedir(), "Approov"), destination_1.destination);
                     core.addPath(path.join(destination_1.destination, "bin"));
                     return;
                 case "linux":
