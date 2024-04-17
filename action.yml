@@ -2,7 +2,7 @@ name: "Install Approov CLI"
 description: "Install the Approov CLI in a GitHub Actions build environment"
 author: "Brandon McAnsh"
 runs:
-  using: 'node12'
+  using: 'node20'
   main: 'dist/index.js'
 branding:
   icon: 'terminal'
